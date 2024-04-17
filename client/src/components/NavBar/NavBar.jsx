@@ -1,12 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-//import logo from "../img/logo.jpg";
-//import s from "./NavBar.module.css";
+import logo from "../../img/logo.jpg";
+import "./NavBar.css";
 
 export default function NavBar() {
   return (
-    <nav className={s.navbar}>
+    <nav className= "navbar">
       <Link to="/videogames">
         <img src={logo} alt="icon" />
       </Link>

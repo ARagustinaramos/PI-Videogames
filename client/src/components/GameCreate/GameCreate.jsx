@@ -1,13 +1,9 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-import { postGame, setFirstMount } from "../actions/index";
-
-import NavBar from "./NavBar";
-
-//import s from "./GameCreate.module.css";
+import { postGame, setFirstMount } from "../../actions";
+import NavBar from "../NavBar/NavBar";
+import "./GameCreate.css";
 
 export default function GameCreate() {
   const dispatch = useDispatch();
@@ -34,8 +30,6 @@ export default function GameCreate() {
     platforms: [],
     genres: [],
   });
-
-
 
   useEffect(() => {
     const rename = /^[0-9a-zA-ZÁ-ÿ/.:-\s]{0,40}$/;
@@ -65,7 +59,6 @@ export default function GameCreate() {
 
     setErrors(errors);
   }, [input.name, input.description, input.platforms]);
-
 
   function validateRating() {
     if (Number(input.rating) || input.rating === "") {
@@ -106,7 +99,6 @@ export default function GameCreate() {
   }
 
   function handleChange(e) {
-    e.preventDefault();
     setInput({
       ...input,
       [e.target.name]: e.target.value,
@@ -114,7 +106,6 @@ export default function GameCreate() {
   }
 
   function handleSelectPlatform(e) {
-    e.preventDefault();
     if (input.platforms.indexOf(e.target.value) === -1) {
       setInput({
         ...input,
@@ -124,7 +115,6 @@ export default function GameCreate() {
   }
 
   function handleDeletePlatform(e) {
-    e.preventDefault();
     setInput({
       ...input,
       platforms: input.platforms.filter((g) => g !== e.target.name),
@@ -132,7 +122,6 @@ export default function GameCreate() {
   }
 
   function handleSelectGenre(e) {
-    e.preventDefault();
     if (input.genres.indexOf(e.target.value) === -1) {
       setInput({
         ...input,
@@ -142,7 +131,6 @@ export default function GameCreate() {
   }
 
   function handleDeleteGenre(e) {
-    e.preventDefault();
     setInput({
       ...input,
       genres: input.genres.filter((g) => g !== e.target.name),
@@ -158,12 +146,10 @@ export default function GameCreate() {
       dispatch(
         postGame({
           ...input,
-       
           rating: input.rating === "" ? 0 : input.rating,
         })
       );
       alert("Game Created");
-   
       history.push("/videogames");
     }
   }
@@ -171,8 +157,8 @@ export default function GameCreate() {
   return (
     <div>
       <NavBar />
-      <div className={s.main}>
-        <form onSubmit={(e) => handleSubmit(e)} className={s.form}>
+      <div className="main">
+        <form onSubmit={(e) => handleSubmit(e)} className="form">
           <h1>Create Game</h1>
           <div>
             <p>Name* (max 40 characters)</p>
@@ -182,7 +168,7 @@ export default function GameCreate() {
               name="name"
               onChange={(e) => handleChange(e)}
             />
-            {errors.name && <span className={s.error}>{errors.name}</span>}
+            {errors.name && <span className="error">{errors.name}</span>}
           </div>
           <div>
             <p>Description* (max 300 characters)</p>
@@ -194,7 +180,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {errors.description && (
-              <span className={s.error}>{errors.description}</span>
+              <span className="error">{errors.description}</span>
             )}
           </div>
           <div>
@@ -215,7 +201,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {releasedError !== "" ? (
-              <span className={s.error}>{releasedError}</span>
+              <span className="error">{releasedError}</span>
             ) : null}
           </div>
           <div>
@@ -227,7 +213,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {ratingError !== "" ? (
-              <span className={s.error}>{ratingError}</span>
+              <span className="error">{ratingError}</span>
             ) : null}
           </div>
           <div>
@@ -243,7 +229,7 @@ export default function GameCreate() {
               ))}
             </select>
             {errors.platforms && (
-              <span className={s.error}>{errors.platforms}</span>
+              <span className="error">{errors.platforms}</span>
             )}
           </div>
 
@@ -291,7 +277,7 @@ export default function GameCreate() {
             ))}
           </ul>
 
-          <button disabled={inputDisabled} type="submit" className={s.submit}>
+          <button disabled={inputDisabled} type="submit" className="submit">
             Create
           </button>
         </form>
@@ -299,3 +285,4 @@ export default function GameCreate() {
     </div>
   );
 }
+

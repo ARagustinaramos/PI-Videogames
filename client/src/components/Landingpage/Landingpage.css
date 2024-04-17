@@ -1,0 +1,90 @@
+.landing-body {
+  background-image: url("https://img.freepik.com/vector-premium/neon-abstracto-elegante-papel-tapiz-escenario-juego-fondo-oscuro_107575-245.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+  align-items: center; /* Centra horizontalmente */
+}
+
+.landing-body div {
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 150px 0;
+  gap: 50px;
+}
+
+.landing-body h1 {
+  text-align: center;
+  position: relative;
+  color: #da3971;
+  animation: title 2s linear infinite;
+}
+
+@keyframes title {
+  0% {
+    color: #3996d9;
+    font-size: 48px;
+  }
+  25% {
+    color: #e83447;
+  }
+  50% {
+    color: #dd56d7;
+    font-size: 56px;
+  }
+  75% {
+    color: #f5812d;
+  }
+  100% {
+    color: #3996d9;
+    font-size: 48px;
+  }
+}
+
+.landing-body button {
+  font-size: 32px;
+  font-weight: 700;
+  color: #3996d9;
+  width: 200px;
+  height: 100px;
+  background-color: transparent;
+  border: 8px solid #3996d9;
+  border-radius: 20px;
+  position: relative;
+}
+
+.landing-body button:hover {
+  cursor: pointer;
+  animation: color 2s linear infinite;
+}
+
+@keyframes color {
+  0% {
+    color: #3996d9;
+    border: 8px solid #3996d9;
+  }
+  25% {
+    color: #e83447;
+    border: 8px solid #e83447;
+  }
+  50% {
+    color: #fbec10;
+    border: 8px solid #fbec10;
+  }
+  75% {
+    color: #f5812d;
+    border: 8px solid #f5812d;
+  }
+  100% {
+    color: #3996d9;
+    border: 8px solid #3996d9;
+  }
+}

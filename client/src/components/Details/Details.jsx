@@ -1,73 +1,76 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { getDetails, deleteGame, resetDetail, setFirstMount } from "../actions";
-
-import NavBar from "./NavBar";
-
-//import s from "./Details.module.css";
+import { getDetails, deleteGame, resetDetail, setFirstMount } from "../../actions";
+import NavBar from "../NavBar/NavBar";
+import "./Details.css"; 
 
 export default function Details(props) {
-
-
   const dispatch = useDispatch();
   const history = useHistory();
 
+  const [loading, setLoading] = useState(true);
   const myGame = useSelector((state) => state.detail);
   const created = myGame.createdInDb ? true : false;
 
   useEffect(() => {
-    dispatch(getDetails(props.match.params.id));
-    return dispatch(resetDetail());
+    setLoading(true);
+    if (props.match.params.id) {
+      dispatch(getDetails(props.match.params.id))
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false));
+    }
+    return () => dispatch(resetDetail());
   }, [dispatch, props.match.params.id]);
 
   function handleDelete(e) {
     e.preventDefault();
-    dispatch(setFirstMount(true));
-    dispatch(deleteGame(myGame.id));
-    alert("Game deleted");
-    history.push("/videogames");
+    if (window.confirm("Are you sure you want to delete this game?")) {
+      dispatch(setFirstMount(true));
+      dispatch(deleteGame(myGame.id));
+      alert("Game deleted");
+      history.push("/videogames");
+    }
   }
 
   return (
     <div>
       <NavBar />
-
-      {Object.keys(myGame).length > 0 ? (
-        <div className={s.main}>
-          <div className={created ? s.page2 : s.page1}>
-            <img src={myGame.image} alt="not found" className={s.image} />
-
-            <div className={s.info}>
-              <h2 className={s.name}>{myGame.name}</h2>
-              <p>released: {myGame.released}</p>
-              <p>Rating {myGame.rating}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="detail">
+          <div className={created ? "page2" : "page1"}>
+            <img src={myGame.image} alt="not found" className="image" />
+            <div className="info">
+              <h2>{myGame.name}</h2>
+              <p>Released: {myGame.released}</p>
+              <p>Rating: {myGame.rating}</p>
             </div>
-
-            <div className={s.description}>
+            <div className="description">
               <p>{myGame.description}</p>
             </div>
-
-            <fieldset className={s.platforms}>
-              <legend>platforms</legend>
-              <ul>
-                {myGame.platforms.map((g, i) => (
-                  <li key={i}>-{g}</li>
-                ))}
-              </ul>
-            </fieldset>
-
-            <fieldset className={s.genres}>
-              <legend>Genres</legend>
-              <ul>
-                {myGame.genres.map((g, i) => (
-                  <li key={i}>-{g}</li>
-                ))}
-              </ul>
-            </fieldset>
-
-            <div className={created ? s.buttons : s.hidden}>
+            {myGame.platforms && Array.isArray(myGame.platforms) && myGame.platforms.length > 0 && (
+              <fieldset className="platforms">
+                <legend>Platforms</legend>
+                <ul>
+                  {myGame.platforms.map((platform, index) => (
+                    <li key={index}>-{platform}</li>
+                  ))}
+                </ul>
+              </fieldset>
+            )}
+            {myGame.genres && Array.isArray(myGame.genres) && (
+              <fieldset className="genres">
+                <legend>Genres</legend>
+                <ul>
+                  {myGame.genres.map((genre, index) => (
+                    <li key={index}>-{genre}</li>
+                  ))}
+                </ul>
+              </fieldset>
+            )}
+            <div className={created ? "buttons" : "hidden"}>
               <button onClick={(e) => handleDelete(e)}>Delete</button>
               <Link to={"/videogames/update"}>
                 <button>Update</button>
@@ -75,7 +78,7 @@ export default function Details(props) {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

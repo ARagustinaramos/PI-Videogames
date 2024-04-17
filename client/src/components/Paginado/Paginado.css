@@ -1,0 +1,32 @@
+.paginado {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; 
+  font-size: 20px;
+}
+
+.paginado p,
+.paginado button {
+  padding: 10px; /* Ajusta el espaciado interno */
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.paginado button {
+  background-color: transparent;
+  border: none;
+}
+
+.paginado > li {
+  margin: 0 5px; /* Aumenta el espacio horizontal entre elementos */
+}
+
+.paginado > li:hover {
+  background-color: #130101;
+}
+
+.paginado .current {
+  font-weight: 700;
+}

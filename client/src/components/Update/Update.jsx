@@ -2,12 +2,9 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
-import { updateGame, setFirstMount } from "../actions/index";
-
-import NavBar from "./NavBar";
-
-//import s from "./GameCreate.module.css";
+import { updateGame, setFirstMount } from "../../actions";
+import NavBar from "../NavBar/NavBar";
+import "./Update.css"
 
 export default function GameCreate() {
   const dispatch = useDispatch();
@@ -37,10 +34,6 @@ export default function GameCreate() {
     genres: myGame.genres,
   });
 
-  // useEffect(() => {
-  //   dispatch(getGenres());
-  //   dispatch(getPlatforms());
-  // }, [dispatch]);
 
   useEffect(() => {
     const rename = /^[0-9a-zA-ZÁ-ÿ/.:-\s]{0,40}$/;
@@ -70,28 +63,6 @@ export default function GameCreate() {
 
     setErrors(errors);
   }, [input.name, input.description, input.platforms]);
-
-  // function validate() {
-  //   let errors = {};
-  //   if (!input.name) errors.name = "Name is required";
-  //   else if (!re.exec(input.name)) errors.name = "Invalid Characters";
-  //   else errors.name = "";
-
-  //   if (!input.description) errors.description = "Description is required";
-  //   else if (!re.exec(input.description))
-  //     errors.description = "Invalid Characters";
-  //   else errors.description = "";
-
-  //   if (input.platforms.length === 0)
-  //     errors.platforms = "Platforms is required";
-  //   else errors.platforms = "";
-
-  //   errors.name === "" && errors.description === "" && errors.platforms === ""
-  //     ? setInputDisabled(false)
-  //     : setInputDisabled(true);
-
-  //   setErrors(errors);
-  // }
 
   function validateRating() {
     if (Number(input.rating) || input.rating === "") {
@@ -186,20 +157,11 @@ export default function GameCreate() {
       dispatch(
         updateGame({
           ...input,
-          // name: input.name.charAt(0).toUpperCase() + input.name.slice(1),
           rating: input.rating === "" ? 0 : input.rating,
         })
       );
       alert("Game Updated");
-      // setInput({
-      //   name: "",
-      //   description: "",
-      //   image: "",
-      //   released: "2000-01-01",
-      //   rating: "",
-      //   platforms: [],
-      //   genres: [],
-      // });
+   
       history.push("/videogames");
     }
   }
@@ -207,8 +169,8 @@ export default function GameCreate() {
   return (
     <div>
       <NavBar />
-      <div className={s.main}>
-        <form onSubmit={(e) => handleSubmit(e)} className={s.form}>
+      <div className="main">
+        <form onSubmit={(e) => handleSubmit(e)} className="form">
           <h1>Update Game</h1>
           <div>
             <p>Name* (max 40 characters)</p>
@@ -218,7 +180,7 @@ export default function GameCreate() {
               name="name"
               onChange={(e) => handleChange(e)}
             />
-            {errors.name && <span className={s.error}>{errors.name}</span>}
+            {errors.name && <span className="error">{errors.name}</span>}
           </div>
           <div>
             <p>Description* (max 300 characters)</p>
@@ -230,7 +192,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {errors.description && (
-              <span className={s.error}>{errors.description}</span>
+              <span className="error">{errors.description}</span>
             )}
           </div>
           <div>
@@ -251,7 +213,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {releasedError !== "" ? (
-              <span className={s.error}>{releasedError}</span>
+              <span className="error">{releasedError}</span>
             ) : null}
           </div>
           <div>
@@ -263,7 +225,7 @@ export default function GameCreate() {
               onChange={(e) => handleChange(e)}
             />
             {ratingError !== "" ? (
-              <span className={s.error}>{ratingError}</span>
+              <span className="error">{ratingError}</span>
             ) : null}
           </div>
           <div>
@@ -279,7 +241,7 @@ export default function GameCreate() {
               ))}
             </select>
             {errors.platforms && (
-              <span className={s.error}>{errors.platforms}</span>
+              <span className="error">{errors.platforms}</span>
             )}
           </div>
 
@@ -327,7 +289,7 @@ export default function GameCreate() {
             ))}
           </ul>
 
-          <button disabled={inputDisabled} type="submit" className={s.submit}>
+          <button disabled={inputDisabled} type="submit" className="submit">
             Update
           </button>
         </form>

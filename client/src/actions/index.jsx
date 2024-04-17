@@ -3,7 +3,7 @@ import axios from "axios";
 export function getGenres() {
   return async function (dispatch) {
     try {
-      const json = await axios.get("/genres");
+      const json = await axios.get("/genre");
       return dispatch({
         type: "GET_GENRES",
         payload: json.data,
@@ -96,13 +96,6 @@ export function resetDetail() {
   };
 }
 
-export function postGame(payload) {
-  return async function () {
-    const response = await axios.post("/videogames/add", payload);
-    return response;
-  };
-}
-
 export function deleteGame(payload) {
   return async function () {
     try {
@@ -123,4 +116,16 @@ export function updateGame(payload) {
       console.log(e);
     }
   };
+}
+
+
+export function postGame(payload) {
+  return async function () {
+    try {
+      const response = await axios.post("/videogames/add", payload);
+      return response;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }

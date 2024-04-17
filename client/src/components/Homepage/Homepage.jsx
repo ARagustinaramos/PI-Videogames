@@ -9,13 +9,12 @@ import {
   setCurrentPage,
   filterGames,
   order,
-} from "../actions";
+} from "../../actions/index";
 
-import Cards from "./Cards";
-import SearchBar from "./SearchBar";
-import NavBar from "./NavBar";
-
-import s from "./Home.module.css";
+import Cards from "../Cards/Cards"
+import SearchBar from "../SerchBar/SearchBar";
+import NavBar from "../NavBar/NavBar";
+import "./Homepage.css";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -25,6 +24,7 @@ export default function Home() {
   const allGenres = useSelector((state) => state.genres);
   const allPlatforms = useSelector((state) => state.platforms);
   const [orden, setOrden] = useState("");
+
   const [filter, setFilter] = useState({
     platform: "all",
     genre: "all",
@@ -32,6 +32,7 @@ export default function Home() {
   });
 
   useEffect(() => {
+    console.log("Filter in useEffect:", filter);
     if (firstMount) {
       dispatch(setCurrentPage(1));
       dispatch(setFirstMount(false));
@@ -41,14 +42,16 @@ export default function Home() {
     } else {
       dispatch(filterGames(filter));
     }
-  }, [dispatch, filter]);
-
+  }, [dispatch, filter, firstMount]);
+  
   function handleFilter(e) {
     e.preventDefault();
-    setFilter({
+    const newFilter = {
       ...filter,
       [e.target.name]: e.target.value,
-    });
+    };
+    console.log("New filter:", newFilter);
+    setFilter(newFilter);
     dispatch(setCurrentPage(1));
   }
 
@@ -68,94 +71,94 @@ export default function Home() {
 
   return (
     <div>
-      <NavBar />
-      <div className={s.main}>
-        <div className={s.order_filter_search}>
-          <div className={s.filter}>
-            <h2>FILTER</h2>
-            <div>
-              <p>Platforms</p>
-              <select
-                onChange={(e) => handleFilter(e)}
-                name="platform"
-                disabled={games.length === 0 ? true : false}
-              >
-                <option value="all">All</option>
-                {allPlatforms?.map((p, i) => (
-                  <option value={p} key={i}>
-                    {p}
-                  </option>
-                ))}
-              </select>
+      <div className="homePage">
+        <NavBar />
+        <div className="content">
+          <div className="order_filter_search">
+            <div className="filter">
+              <h2 style={{ color: "blue" }}>FILTER</h2>
+              <div>
+                <p style={{ color: "green" }}>Platforms</p>
+                <select
+                  onChange={(e) => handleFilter(e)}
+                  name="platform"
+                  disabled={games.length === 0 ? true : false}
+                >
+                  <option value="all">All</option>
+                  {allPlatforms?.map((p, i) => (
+                    <option value={p} key={i}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <p style={{ color: "green" }}>Genre</p>
+                <select
+                  onChange={(e) => handleFilter(e)}
+                  name="genre"
+                  disabled={games.length === 0 ? true : false}
+                >
+                  <option value="all">All</option>
+                  {allGenres?.map((g, i) => (
+                    <option value={g} key={i}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <p style={{ color: "green" }}>Source</p>
+                <select
+                  onChange={(e) => handleFilter(e)}
+                  name="source"
+                  disabled={games.length === 0 ? true : false}
+                >
+                  <option value="all">All</option>
+                  <option value="api">API</option>
+                  <option value="created">CREATED</option>
+                </select>
+              </div>
             </div>
 
-            <div>
-              <p>Genre</p>
-              <select
-                onChange={(e) => handleFilter(e)}
-                name="genre"
-                disabled={games.length === 0 ? true : false}
-              >
-                <option value="all">All</option>
-                {allGenres?.map((g, i) => (
-                  <option value={g} key={i}>
-                    {g}
-                  </option>
-                ))}
-              </select>
+            <div className="order">
+              <h2 style={{ color: "blue" }}>ORDER</h2>
+              <div>
+                <p style={{ color: "green" }}>Order by name</p>
+                <select
+                  onChange={(e) => handleSortName(e)}
+                  defaultValue="-"
+                  disabled={games.length === 0 ? true : false}
+                >
+                  <option disabled>-</option>
+                  <option value="asc">A-Z</option>
+                  <option value="desc">Z-A</option>
+                </select>
+              </div>
+              <div>
+                <p style={{ color: "green" }}>Order by rating</p>
+                <select
+                  onChange={(e) => handleSortRating(e)}
+                  defaultValue="-"
+                  disabled={games.length === 0 ? true : false}
+                >
+                  <option disabled>-</option>
+                  <option value="asc">Asc</option>
+                  <option value="desc">Des</option>
+                </select>
+              </div>
+              {<p>{orden}</p>}
             </div>
 
-            <div>
-              <p>Source</p>
-              <select
-                onChange={(e) => handleFilter(e)}
-                name="source"
-                disabled={games.length === 0 ? true : false}
-              >
-                <option value="all">All</option>
-                <option value="api">API</option>
-                <option value="created">CREATED</option>
-              </select>
+            <div className="search">
+              <h2 style={{ color: "blue" }}>SEARCH</h2>
+              <SearchBar />
             </div>
-          </div>
-
-          <div className={s.order}>
-            <h2>ORDER</h2>
-            <div>
-              <p>Order by name</p>
-              <select
-                onChange={(e) => handleSortName(e)}
-                defaultValue="-"
-                disabled={games.length === 0 ? true : false}
-              >
-                <option disabled>-</option>
-                <option value="asc">A-Z</option>
-                <option value="desc">Z-A</option>
-              </select>
-            </div>
-
-            <div>
-              <p>Order by rating</p>
-              <select
-                onChange={(e) => handleSortRating(e)}
-                defaultValue="-"
-                disabled={games.length === 0 ? true : false}
-              >
-                <option disabled>-</option>
-                <option value="asc">Asc</option>
-                <option value="desc">Des</option>
-              </select>
-            </div>
-            {<p>{orden}</p>}
-          </div>
-
-          <div className={s.search}>
-            <h2>SEARCH</h2>
-            <SearchBar />
           </div>
         </div>
-
-        <div className={s.gameList}>
+        <div className="gameList">
           <Cards />
         </div>
       </div>

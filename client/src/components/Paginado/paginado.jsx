@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
-//import s from "./Paginado.module.css";
+import "./Paginado.css";
 
 export default function Paginado({ gamesPerPage, allGames, paginado }) {
   const pages = Math.ceil(allGames / gamesPerPage);
@@ -15,42 +14,29 @@ export default function Paginado({ gamesPerPage, allGames, paginado }) {
 
   return (
     <nav>
-      <h3>Pages</h3>
-      <ul>
-        <div className={s.paginado}>
-          {currentPage - 1 > 0 ? (
-            <p
-              onClick={() => paginado(currentPage - 1)}
-              className={s.next_previous}
+      
+      <div className="paginado">
+        {currentPage - 1 > 0 ? (
+          <p onClick={() => paginado(currentPage - 1)} className="next_previous">
+            previous
+          </p>
+        ) : null}
+        {pageNumbers &&
+          pageNumbers.map((number, i) => (
+            <button
+              key={i}
+              onClick={() => paginado(number)}
+              className={number === currentPage ? "current" : ""}
             >
-              previous
-            </p>
-          ) : null}
-          {pageNumbers &&
-            pageNumbers.map((number, i) => (
-              <li className="number" key={i}>
-                {number === currentPage ? (
-                  <button
-                    onClick={() => paginado(number)}
-                    className={s.current}
-                  >
-                    {number}
-                  </button>
-                ) : (
-                  <button onClick={() => paginado(number)}>{number}</button>
-                )}
-              </li>
-            ))}
-          {pages > currentPage ? (
-            <p
-              onClick={() => paginado(currentPage + 1)}
-              className={s.next_previous}
-            >
-              next
-            </p>
-          ) : null}
-        </div>
-      </ul>
+              {number}
+            </button>
+          ))}
+        {pages > currentPage ? (
+          <p onClick={() => paginado(currentPage + 1)} className="next_previous">
+            next
+          </p>
+        ) : null}
+      </div>
     </nav>
   );
 }

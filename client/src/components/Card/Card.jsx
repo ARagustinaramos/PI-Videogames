@@ -1,19 +1,17 @@
 import React from "react";
-import star from "../img/star.png";
-//import s from "./Card.module.css";
+import estrella from "../../img/estrella.jpg";
+import "./Card.css";
 
 export default function Card({ name, image, rating, genres }) {
   return (
-    <div className={s.card}>
-      <img src={image} alt="not found" width="250px" height="125px" />
+    <div className="card">
+      <img src={image} alt={name} width="250px" height="125px" />
       <h3>{name}</h3>
       <p>
-        <div>
-          {rating}
-          <img src={star} alt="star" />
-        </div>
+        Rating: {rating}
+        <img src={estrella} alt="star" />
       </p>
-      <p>{genres.join(", ")}</p>
+      <p>{genres && genres.length > 0 ? genres.join(", ") : "No genres"}</p>
     </div>
   );
 }
