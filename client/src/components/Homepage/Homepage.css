@@ -29,10 +29,14 @@
 .search {
   flex: 1;
   max-width: 300px;
+  border-radius: 10px;
+  background-color: transparent;
 }
 
 .order_filter_search * {
   text-align: center;
+  border-radius: 10px;
+  
 }
 
 .order_filter_search option,

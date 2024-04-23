@@ -6,15 +6,15 @@
 }
 
 .input {
-  width: 150px;
-  padding: 3px;
-  margin-right: 5px;
+  width: 200px;
+  padding: 5px;
+  margin-right: 8px;
 }
 
 .button {
   border: 1px solid #211f20;
   border-radius: 10px;
-  background-color: #999898;
+  background-color: #16e94afb;
   cursor: pointer;
   height: 40px;
   width: 70px;

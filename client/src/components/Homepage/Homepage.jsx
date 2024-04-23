@@ -32,7 +32,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    console.log("Filter in useEffect:", filter);
+
     if (firstMount) {
       dispatch(setCurrentPage(1));
       dispatch(setFirstMount(false));
@@ -83,6 +83,7 @@ export default function Home() {
                   onChange={(e) => handleFilter(e)}
                   name="platform"
                   disabled={games.length === 0 ? true : false}
+                  value={filter.platform}
                 >
                   <option value="all">All</option>
                   {allPlatforms?.map((p, i) => (
@@ -99,13 +100,15 @@ export default function Home() {
                   onChange={(e) => handleFilter(e)}
                   name="genre"
                   disabled={games.length === 0 ? true : false}
+                  value={filter.genre}
                 >
                   <option value="all">All</option>
-                  {allGenres?.map((g, i) => (
-                    <option value={g} key={i}>
-                      {g}
-                    </option>
-                  ))}
+                  {Array.isArray(allGenres) &&
+                     allGenres.map((g, i) => (
+                    <option key={i} value={g}>
+                       {g}
+                     </option>
+                     ))}
                 </select>
               </div>
 
@@ -115,6 +118,7 @@ export default function Home() {
                   onChange={(e) => handleFilter(e)}
                   name="source"
                   disabled={games.length === 0 ? true : false}
+                  value={filter.source}
                 >
                   <option value="all">All</option>
                   <option value="api">API</option>
@@ -129,10 +133,10 @@ export default function Home() {
                 <p style={{ color: "green" }}>Order by name</p>
                 <select
                   onChange={(e) => handleSortName(e)}
-                  defaultValue="-"
+                  value={orden}
                   disabled={games.length === 0 ? true : false}
                 >
-                  <option disabled>-</option>
+                  <option value="-" disabled>-</option>
                   <option value="asc">A-Z</option>
                   <option value="desc">Z-A</option>
                 </select>
@@ -141,15 +145,15 @@ export default function Home() {
                 <p style={{ color: "green" }}>Order by rating</p>
                 <select
                   onChange={(e) => handleSortRating(e)}
-                  defaultValue="-"
+                  value={orden}
                   disabled={games.length === 0 ? true : false}
                 >
-                  <option disabled>-</option>
+                  <option value="-" disabled>-</option>
                   <option value="asc">Asc</option>
                   <option value="desc">Des</option>
                 </select>
               </div>
-              {<p>{orden}</p>}
+              <p>{orden}</p>
             </div>
 
             <div className="search">

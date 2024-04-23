@@ -52,7 +52,10 @@ async function getDbGames() {
       description: game.description,
       image: game.image, 
       released: game.released, 
-      rating: game.rating,
+      rating: game.rating, 
+      createdInDb : game.createdInDb,
+      genres: game.genre,
+      platforms: game.platform,
     
     }));
 
@@ -83,7 +86,7 @@ router.get("/videogames", async (req, res) => {
       console.log("Filtering by CREATED");
       // Si el filtro por "Source" es "CREATED", obtener solo los juegos creados manualmente
       games = await Videogame.findAll({
-        where: { created_manually: true }, // Asumiendo que tienes una columna "created_manually" en tu tabla Videogame
+        where: { createdInDb: true },
         include: [{ model: Genre }],
       });
     } else {

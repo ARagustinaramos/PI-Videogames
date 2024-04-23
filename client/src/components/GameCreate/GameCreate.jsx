@@ -106,34 +106,38 @@ export default function GameCreate() {
   }
 
   function handleSelectPlatform(e) {
-    if (input.platforms.indexOf(e.target.value) === -1) {
+    const selectedPlatform = e.target.value;
+    if (input.platforms.indexOf(selectedPlatform) === -1) {
       setInput({
         ...input,
-        platforms: [...input.platforms, e.target.value],
+        platforms: [...input.platforms, selectedPlatform],
       });
     }
   }
 
   function handleDeletePlatform(e) {
+    const deletedPlatform = e.target.name;
     setInput({
       ...input,
-      platforms: input.platforms.filter((g) => g !== e.target.name),
+      platforms: input.platforms.filter((platform) => platform !== deletedPlatform),
     });
   }
 
   function handleSelectGenre(e) {
-    if (input.genres.indexOf(e.target.value) === -1) {
+    const selectedGenre = e.target.value;
+    if (input.genres.indexOf(selectedGenre) === -1) {
       setInput({
         ...input,
-        genres: [...input.genres, e.target.value],
+        genres: [...input.genres, selectedGenre],
       });
     }
   }
 
   function handleDeleteGenre(e) {
+    const deletedGenre = e.target.name;
     setInput({
       ...input,
-      genres: input.genres.filter((g) => g !== e.target.name),
+      genres: input.genres.filter((genre) => genre !== deletedGenre),
     });
   }
 
@@ -159,7 +163,7 @@ export default function GameCreate() {
       <NavBar />
       <div className="main">
         <form onSubmit={(e) => handleSubmit(e)} className="form">
-          <h1>Create Game</h1>
+          <h1 style={{ color: "blue" }}>Create Game</h1>
           <div>
             <p>Name* (max 40 characters)</p>
             <input
@@ -219,14 +223,15 @@ export default function GameCreate() {
           <div>
             <p>Platforms* </p>
             <select onChange={(e) => handleSelectPlatform(e)}>
-              <option selected disabled hidden>
-                select platform
+              <option value="" disabled hidden>
+                Select platform
               </option>
-              {allPlatforms?.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
+              {Array.isArray(allPlatforms) &&
+                allPlatforms.map((platform, i) => (
+                  <option key={i} value={platform}>
+                    {platform}
+                  </option>
+                ))}
             </select>
             {errors.platforms && (
               <span className="error">{errors.platforms}</span>
@@ -234,16 +239,16 @@ export default function GameCreate() {
           </div>
 
           <ul>
-            {input.platforms.map((g, i) => (
+            {input.platforms.map((platform, i) => (
               <li key={i}>
                 <button
                   type="button"
-                  name={g}
-                  onClick={(g) => handleDeletePlatform(g)}
+                  name={platform}
+                  onClick={(e) => handleDeletePlatform(e)}
                 >
                   X
                 </button>
-                <p>{g}</p>
+                <p>{platform}</p>
               </li>
             ))}
           </ul>
@@ -252,30 +257,34 @@ export default function GameCreate() {
             <p>Genres </p>
             <select onChange={(e) => handleSelectGenre(e)}>
               <option selected disabled hidden>
-                select genres
+                Select genres
               </option>
-              {allGenres?.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
+              {Array.isArray(allGenres) &&
+                allGenres.map((genre, i) => (
+                  <option key={i} value={genre}>
+                    {genre}
+                  </option>
+                ))}
             </select>
           </div>
-
-          <ul>
-            {input.genres.map((g, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  name={g}
-                  onClick={(g) => handleDeleteGenre(g)}
-                >
-                  X
-                </button>
-                <p>{g}</p>
-              </li>
-            ))}
-          </ul>
+          {input.genres && input.genres.length > 0 ? (
+  <ul>
+    {input.genres.map((genre, i) => (
+      <li key={i}>
+        <button
+          type="button"
+          name={genre}
+          onClick={(e) => handleDeleteGenre(e)}
+        >
+          X
+        </button>
+        <p>{genre}</p>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p>No genres selected</p>
+)}
 
           <button disabled={inputDisabled} type="submit" className="submit">
             Create
@@ -285,4 +294,3 @@ export default function GameCreate() {
     </div>
   );
 }
-

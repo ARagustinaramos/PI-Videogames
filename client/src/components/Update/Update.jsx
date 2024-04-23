@@ -29,8 +29,8 @@ export default function GameCreate() {
     description: myGame.description,
     image: myGame.image,
     released: myGame.released,
-    rating: myGame.rating.toString(),
-    platforms: myGame.platforms,
+    rating:myGame.rating ? myGame.rating.toString() : "",
+    platforms: myGame.platforms || [],
     genres: myGame.genres,
   });
 
@@ -105,13 +105,11 @@ export default function GameCreate() {
   }
 
   function handleChange(e) {
-    e.preventDefault();
     setInput({
       ...input,
       [e.target.name]: e.target.value,
     });
   }
-
   function handleSelectPlatform(e) {
     e.preventDefault();
     if (input.platforms.indexOf(e.target.value) === -1) {
@@ -132,11 +130,13 @@ export default function GameCreate() {
 
   function handleSelectGenre(e) {
     e.preventDefault();
-    if (input.genres.indexOf(e.target.value) === -1) {
-      setInput({
-        ...input,
-        genres: [...input.genres, e.target.value],
-      });
+    if (input.genres && Array.isArray(input.genres)) {
+      if (input.genres.indexOf(e.target.value) === -1) {
+        setInput({
+          ...input,
+          genres: [...input.genres, e.target.value],
+        });
+      }
     }
   }
 
@@ -234,11 +234,12 @@ export default function GameCreate() {
               <option selected disabled hidden>
                 select platform
               </option>
-              {allPlatforms?.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
+              {Array.isArray(allPlatforms) &&
+                  allPlatforms.map((g, i) => (
+                 <option key={i} value={g}>
+                    {g}
+                   </option>
+                  ))}
             </select>
             {errors.platforms && (
               <span className="error">{errors.platforms}</span>
@@ -246,48 +247,52 @@ export default function GameCreate() {
           </div>
 
           <ul>
-            {input.platforms.map((g, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  name={g}
-                  onClick={(g) => handleDeletePlatform(g)}
-                >
-                  X
-                </button>
-                <p>{g}</p>
-              </li>
-            ))}
-          </ul>
+  {Array.isArray(input.platforms) && input.platforms.map((g, i) => (
+    <li key={i}>
+      <button
+        type="button"
+        name={g}
+        onClick={(g) => handleDeletePlatform(g)}
+      >
+        X
+      </button>
+      <p>{g}</p>
+    </li>
+  ))}
+</ul>
+<div>
+  <p>Genres</p>
+  <select onChange={(e) => handleSelectGenre(e)}>
+    <option selected disabled hidden>
+      Select genres
+    </option>
+    {Array.isArray(allGenres) &&
+      allGenres.map((g, i) => (
+        <option key={i} value={g}>
+          {g}
+        </option>
+      ))}
+  </select>
+</div>
 
-          <div>
-            <p>Genres </p>
-            <select onChange={(e) => handleSelectGenre(e)}>
-              <option selected disabled hidden>
-                select genres
-              </option>
-              {allGenres?.map((g, i) => (
-                <option key={i} value={g}>
-                  {g}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <ul>
-            {input.genres.map((g, i) => (
-              <li key={i}>
-                <button
-                  type="button"
-                  name={g}
-                  onClick={(g) => handleDeleteGenre(g)}
-                >
-                  X
-                </button>
-                <p>{g}</p>
-              </li>
-            ))}
-          </ul>
+          {input.genres && input.genres.length > 0 && (
+  <ul>
+    {input.genres.map((genre, i) => (
+      <li key={i}>
+        <button
+          type="button"
+          name={genre}
+          onClick={(e) => handleDeleteGenre(e)}
+        >
+          X
+        </button>
+        <p>{genre}</p>
+      </li>
+    ))}
+  </ul>
+)}
+
 
           <button disabled={inputDisabled} type="submit" className="submit">
             Update
@@ -297,3 +302,4 @@ export default function GameCreate() {
     </div>
   );
 }
+

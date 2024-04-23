@@ -2,31 +2,40 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px; 
-  font-size: 20px;
+  margin-top: 30px; 
+  font-size: 30px;
+  color:#8A2BE2
 }
 
 .paginado p,
 .paginado button {
-  padding: 10px; /* Ajusta el espaciado interno */
-  cursor: pointer;
-  font-weight: 400;
-  font-size: 20px;
+    cursor: pointer;
+    font-weight: bold; /* Agrega negrita a los elementos de texto */
+    text-decoration: underline; 
 }
 
 .paginado button {
   background-color: transparent;
-  border: none;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold; 
+  text-decoration: underline; 
+  border-radius: 5px; 
 }
 
 .paginado > li {
-  margin: 0 5px; /* Aumenta el espacio horizontal entre elementos */
+  margin: 0 5px; 
 }
 
 .paginado > li:hover {
-  background-color: #130101;
+  background-color:#8A2BE2;
+
 }
 
 .paginado .current {
   font-weight: 700;
+}
+.paginado button:hover {
+  background-color: #39FF14; 
+  color: #ffffff;
 }

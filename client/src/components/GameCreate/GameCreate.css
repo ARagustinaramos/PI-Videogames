@@ -1,6 +1,3 @@
-
-
-
 .main {
     min-height: 100vh;
     display: flex;
@@ -52,11 +49,15 @@
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 2px;
+    
   }
   
   .form ul li button {
-    padding: 5px;
+    padding: 1px;
+    background-color: #f44336;
+    border-radius: 50%;
+    cursor: pointer;
   }
   
   .error {
@@ -66,6 +67,7 @@
   .submit {
     padding: 10px 0;
     cursor: pointer;
+    background-color: #4caf50;
   }
   
   @media screen and (max-width: 400px) {
