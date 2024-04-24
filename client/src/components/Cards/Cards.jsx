@@ -19,9 +19,10 @@ export default function Cards() {
     dispatch(setCurrentPage(pageNumber));
   };
 
-
-
-  if (allGames.length === 0 || (allGames.length === 1 && allGames[0] === "empty")) {
+  if (
+    allGames.length === 0 ||
+    (allGames.length === 1 && allGames[0] === "empty")
+  ) {
     return <p>No Games</p>;
   }
 
@@ -32,16 +33,17 @@ export default function Cards() {
         <div>
           <div className="list">
             {currentGames?.map((g, i) => (
-              <Link to={"/videogames/" + g.id} key={i}>
-                <div>
+              <div key={i}>
+                
+                <Link to={"/videogames/" + g.id}>
                   <Card
                     name={g.name}
                     image={g.image}
                     rating={g.rating}
                     genres={g.genres}
                   />
-                </div>
-              </Link>
+                </Link>
+              </div>
             ))}
           </div>
           <Paginado

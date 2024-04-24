@@ -15,13 +15,13 @@ const getAllApiGames = async () => {
       const pages = await axios.get(
         `https://api.rawg.io/api/games?key=${APIKEY}&page=${i}`
       );
-      console.log("API Response:", pages.data);
       const pageGames = pages.data.results.map((el) => ({
         id: el.id,
         name: el.name,
         image: el.background_image,
         released: el.released,
         rating: el.rating,
+        origin: "API",
         platforms: el.platforms.map((p) => p.platform.name),
         genres: el.genres.map((g) => g.name),
       }));
@@ -38,8 +38,10 @@ const getAllApiGames = async () => {
 async function getDbGames() {
   try {
     // Recuperar los juegos de la base de datos
-    const games = await Videogame.findAll();
-    console.log("DB Games:", games);
+    const games = await Videogame.findAll({
+      include: [{ model: Genre }], // Incluir el modelo Genre para recuperar los géneros asociados con cada juego
+    });
+
     // Verificar si se recuperaron juegos
     if (!games) {
       return []; // Devolver un arreglo vacío si no se encontraron juegos
@@ -53,10 +55,13 @@ async function getDbGames() {
       image: game.image, 
       released: game.released, 
       rating: game.rating, 
+      origin: "DB",
       createdInDb : game.createdInDb,
-      genres: game.genre,
+      genres: game.Genres.map((genre) => ({
+        id: genre.id,
+        name: genre.name,
+      })),
       platforms: game.platform,
-    
     }));
 
     return formattedGames;
@@ -65,8 +70,6 @@ async function getDbGames() {
     throw new Error("Error al obtener los juegos de la base de datos");
   }
 }
-
-
 // Search All games
 const getAllGames = async () => {
   const apiGames = await getAllApiGames();
@@ -170,36 +173,6 @@ router.delete("/delete/:idgame", async (req, res) => {
   }
 });
 
-
-// Update game by id
-router.put("/update", async (req, res) => {
-  const { id, name, description, image, released, rating, platforms, genres } = req.body;
-
-  try {
-    // Actualizar el juego en la base de datos
-    await Videogame.update(
-      { name, description, image, released, rating, platforms },
-      { where: { id } }
-    );
-
-    // Buscar los géneros en la base de datos
-    const genreDb = await Genre.findAll({ where: { name: genres } });
-
-    // Eliminar los géneros asociados al juego
-    await game_genre.destroy({ where: { videogameId: id } });
-
-    // Obtener el juego actualizado
-    const game = await Videogame.findByPk(id);
-
-    // Agregar los nuevos géneros al juego
-    await game.addGenres(genreDb);
-
-    res.status(200).send("Game Updated");
-  } catch (error) {
-    console.error("Error while updating game:", error);
-    res.status(500).send("Error while updating game");
-  }
-});
 
 
 // Add game

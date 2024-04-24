@@ -12,14 +12,12 @@ export default function GameCreate() {
   const history = useHistory();
 
   const [errors, setErrors] = useState({
-    name: "Name is required",
-    description: "Description is required",
-    platforms: "Platforms are required",
+    name: "",
+    description: "",
+    platforms: "",
   });
 
   const [inputDisabled, setInputDisabled] = useState(true);
-  const [ratingError, setRatingError] = useState("");
-  const [releasedError, setReleasedError] = useState("");
 
   const [input, setInput] = useState({
     name: "",
@@ -32,71 +30,17 @@ export default function GameCreate() {
   });
 
   useEffect(() => {
-    const rename = /^[0-9a-zA-ZÁ-ÿ/.:-\s]{0,40}$/;
-    const redescription = /^[0-9a-zA-ZÁ-ÿ/.:-\s]{0,300}$/;
-    let errors = {};
-    if (!input.name) errors.name = "Name is required";
-    else if (!rename.exec(input.name)) {
-      input.name.length > 40
-        ? (errors.name = "Invalid Length")
-        : (errors.name = "Invalid Characters");
-    } else errors.name = "";
-
-    if (!input.description) errors.description = "Description is required";
-    else if (!redescription.exec(input.description)) {
-      input.description.length > 300
-        ? (errors.description = "Invalid Length")
-        : (errors.description = "Invalid Characters");
-    } else errors.description = "";
-
-    if (input.platforms.length === 0)
-      errors.platforms = "Platforms is required";
-    else errors.platforms = "";
-
-    errors.name === "" && errors.description === "" && errors.platforms === ""
-      ? setInputDisabled(false)
-      : setInputDisabled(true);
-
-    setErrors(errors);
-  }, [input.name, input.description, input.platforms]);
-
-  function validateRating() {
-    if (Number(input.rating) || input.rating === "") {
-      if (input.rating.length <= 4) {
-        if (input.rating <= 5 && input.rating >= 0) {
-          if (input.rating[0] !== ".") {
-            setRatingError("");
-            return 1;
-          }
-        }
-      }
+    function validateForm() {
+      let errors = {};
+      if (!input.name) errors.name = "Name is required";
+      if (!input.description) errors.description = "Description is required";
+      if (input.platforms.length === 0) errors.platforms = "Platforms are required";
+      setInputDisabled(Object.keys(errors).length !== 0);
+      setErrors(errors);
     }
-    setRatingError("Invalid Value");
-    return 0;
-  }
 
-  function validateReleased() {
-    const date = input.released.split("-");
-    if (
-      date[0].length !== 4 ||
-      !Number(date[0]) ||
-      date[0] < 1900 ||
-      date[0] > 2100
-    ) {
-      setReleasedError("Invalid Date");
-      return 0;
-    }
-    if (!Number(date[1]) || date[1] < 1 || date[1] > 12) {
-      setReleasedError("Invalid Date");
-      return 0;
-    }
-    if (!Number(date[2]) || date[2] < 1 || date[2] > 31) {
-      setReleasedError("Invalid Date");
-      return 0;
-    }
-    setReleasedError("");
-    return 1;
-  }
+    validateForm(); // Llamamos a la función dentro del useEffect
+  }, [input]); // Dependencia del useEffect
 
   function handleChange(e) {
     setInput({
@@ -107,7 +51,7 @@ export default function GameCreate() {
 
   function handleSelectPlatform(e) {
     const selectedPlatform = e.target.value;
-    if (input.platforms.indexOf(selectedPlatform) === -1) {
+    if (!input.platforms.includes(selectedPlatform)) {
       setInput({
         ...input,
         platforms: [...input.platforms, selectedPlatform],
@@ -115,48 +59,42 @@ export default function GameCreate() {
     }
   }
 
-  function handleDeletePlatform(e) {
-    const deletedPlatform = e.target.name;
+  function handleDeletePlatform(platform) {
     setInput({
       ...input,
-      platforms: input.platforms.filter((platform) => platform !== deletedPlatform),
+      platforms: input.platforms.filter((p) => p !== platform),
     });
   }
 
   function handleSelectGenre(e) {
     const selectedGenre = e.target.value;
-    if (input.genres.indexOf(selectedGenre) === -1) {
-      setInput({
-        ...input,
-        genres: [...input.genres, selectedGenre],
-      });
-    }
-  }
-
-  function handleDeleteGenre(e) {
-    const deletedGenre = e.target.name;
     setInput({
       ...input,
-      genres: input.genres.filter((genre) => genre !== deletedGenre),
+      genres: [...input.genres, selectedGenre],
+    });
+  }
+
+  function handleDeleteGenre(genre) {
+    setInput({
+      ...input,
+      genres: input.genres.filter((g) => g !== genre),
     });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    const r = validateRating();
-    const d = validateReleased();
-    if (r && d) {
-      dispatch(setFirstMount(true));
-      dispatch(
-        postGame({
-          ...input,
-          rating: input.rating === "" ? 0 : input.rating,
-        })
-      );
+    dispatch(setFirstMount(true));
+    dispatch(
+      postGame({
+        ...input,
+        rating: input.rating === "" ? 0 : input.rating,
+      })
+    ).then(() => {
       alert("Game Created");
-      history.push("/videogames");
-    }
+      history.push("/videogames"); 
+    });
   }
+  
 
   return (
     <div>
@@ -204,9 +142,6 @@ export default function GameCreate() {
               name="released"
               onChange={(e) => handleChange(e)}
             />
-            {releasedError !== "" ? (
-              <span className="error">{releasedError}</span>
-            ) : null}
           </div>
           <div>
             <p>Rating (0-5 two decimals) </p>
@@ -216,13 +151,15 @@ export default function GameCreate() {
               name="rating"
               onChange={(e) => handleChange(e)}
             />
-            {ratingError !== "" ? (
-              <span className="error">{ratingError}</span>
-            ) : null}
+            {errors.rating && <span className="error">{errors.rating}</span>}
           </div>
           <div>
             <p>Platforms* </p>
-            <select onChange={(e) => handleSelectPlatform(e)}>
+            <select
+              value={input.platforms}
+              onChange={(e) => handleSelectPlatform(e)}
+              multiple
+            >
               <option value="" disabled hidden>
                 Select platform
               </option>
@@ -237,14 +174,13 @@ export default function GameCreate() {
               <span className="error">{errors.platforms}</span>
             )}
           </div>
-
+  
           <ul>
             {input.platforms.map((platform, i) => (
               <li key={i}>
                 <button
                   type="button"
-                  name={platform}
-                  onClick={(e) => handleDeletePlatform(e)}
+                  onClick={() => handleDeletePlatform(platform)}
                 >
                   X
                 </button>
@@ -252,11 +188,15 @@ export default function GameCreate() {
               </li>
             ))}
           </ul>
-
+  
           <div>
             <p>Genres </p>
-            <select onChange={(e) => handleSelectGenre(e)}>
-              <option selected disabled hidden>
+            <select
+              value={input.genres}
+              onChange={(e) => handleSelectGenre(e)}
+              multiple
+            >
+              <option value="" disabled hidden>
                 Select genres
               </option>
               {Array.isArray(allGenres) &&
@@ -268,24 +208,23 @@ export default function GameCreate() {
             </select>
           </div>
           {input.genres && input.genres.length > 0 ? (
-  <ul>
-    {input.genres.map((genre, i) => (
-      <li key={i}>
-        <button
-          type="button"
-          name={genre}
-          onClick={(e) => handleDeleteGenre(e)}
-        >
-          X
-        </button>
-        <p>{genre}</p>
-      </li>
-    ))}
-  </ul>
-) : (
-  <p>No genres selected</p>
-)}
-
+            <ul>
+              {input.genres.map((genre, i) => (
+                <li key={i}>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteGenre(genre)}
+                  >
+                    X
+                  </button>
+                  <p>{genre}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No genres selected</p>
+          )}
+  
           <button disabled={inputDisabled} type="submit" className="submit">
             Create
           </button>

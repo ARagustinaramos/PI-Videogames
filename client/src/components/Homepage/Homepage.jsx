@@ -69,6 +69,7 @@ export default function Home() {
     setOrden(`Order by rating: ${e.target.value}`);
   }
 
+  
   return (
     <div>
       <div className="homePage">
@@ -115,14 +116,14 @@ export default function Home() {
               <div>
                 <p style={{ color: "green" }}>Source</p>
                 <select
-                  onChange={(e) => handleFilter(e)}
+                  onChange={handleFilter}
                   name="source"
                   disabled={games.length === 0 ? true : false}
                   value={filter.source}
                 >
-                  <option value="all">All</option>
-                  <option value="api">API</option>
-                  <option value="created">CREATED</option>
+                  <option value="all" key="all">All</option>
+                  <option value="api" key="api">API</option>
+                  <option value="created" key="created">CREATED</option>
                 </select>
               </div>
             </div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { getDetails, deleteGame, resetDetail, setFirstMount } from "../../actions";
 import NavBar from "../NavBar/NavBar";
-import "./Details.css"; 
+import "./Details.css";
 
 export default function Details(props) {
   const dispatch = useDispatch();
@@ -33,49 +33,57 @@ export default function Details(props) {
     }
   }
 
+  useEffect(() => {
+    console.log("myGame:", myGame); // Verificar la estructura de los datos del juego
+  }, [myGame]);
+
   return (
     <div>
       <NavBar />
+
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="detail">
           <div className={created ? "page2" : "page1"}>
-            <img src={myGame.image} alt="not found" className="image" />
-            <div className="info">
-              <h2>{myGame.name}</h2>
-              <p>Released: {myGame.released}</p>
-              <p>Rating: {myGame.rating}</p>
-            </div>
-            <div className="description">
-              <p>{myGame.description}</p>
-            </div>
-            {myGame.platforms && Array.isArray(myGame.platforms) && myGame.platforms.length > 0 && (
-              <fieldset className="platforms">
-                <legend>Platforms</legend>
-                <ul>
-                  {myGame.platforms.map((platform, index) => (
-                    <li key={index}>-{platform}</li>
-                  ))}
-                </ul>
-              </fieldset>
+            {myGame && (
+              <>
+                <img src={myGame.image} alt="not found" className="image" />
+                <div className="info">
+                  <h2>{myGame.name}</h2>
+                  <p>Released: {myGame.released}</p>
+                  <p>Rating: {myGame.rating}</p>
+                </div>
+                <div className="description">
+                  <p>{myGame.description}</p>
+                </div>
+                {created && (
+                  <div className="buttons">
+                    <button onClick={handleDelete}>Delete</button>
+                  </div>
+                )}
+                {myGame && myGame.platforms && myGame.platforms.length > 0 && (
+                  <fieldset className="platforms">
+                    <legend>Platforms</legend>
+                    <ul>
+                      {myGame.platforms.map((platform, i) => (
+                        <li key={i}>-{typeof platform === 'string' ? platform : platform.name}</li>
+                      ))}
+                    </ul>
+                  </fieldset>
+                )}
+                {myGame.genres && myGame.genres.length > 0 && (
+                  <fieldset className="genres">
+                    <legend>Genres</legend>
+                    <ul>
+                      {myGame.genres.map((genre, i) => (
+                        <li key={i}>-{typeof genre === 'string' ? genre : genre.name}</li>
+                      ))}
+                    </ul>
+                  </fieldset>
+                )}
+              </>
             )}
-            {myGame.genres && Array.isArray(myGame.genres) && (
-              <fieldset className="genres">
-                <legend>Genres</legend>
-                <ul>
-                  {myGame.genres.map((genre, index) => (
-                    <li key={index}>-{genre}</li>
-                  ))}
-                </ul>
-              </fieldset>
-            )}
-            <div className={created ? "buttons" : "hidden"}>
-              <button onClick={(e) => handleDelete(e)}>Delete</button>
-              <Link to={"/videogames/update"}>
-                <button>Update</button>
-              </Link>
-            </div>
           </div>
         </div>
       )}

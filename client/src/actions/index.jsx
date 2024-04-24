@@ -14,13 +14,38 @@ export function getGenres() {
   };
 }
 
-export function getGames() {
+export function getGames(filter) {
   return async function (dispatch) {
     try {
-      const json = await axios.get("/videogames");
+      let url = "/videogames";
+
+      // Construye la URL con los parámetros de filtrado si existen
+      if (filter && Object.keys(filter).length > 0) {
+        url += "?";
+        for (const key in filter) {
+          if (filter[key] !== "all") {
+            url += `${key}=${filter[key]}&`;
+          }
+        }
+        // Elimina el último "&" de la URL
+        url = url.slice(0, -1);
+      }
+
+      const json = await axios.get(url);
+
+      
+      let filteredGames = json.data;
+      if (filter && Object.keys(filter).length > 0) {
+        for (const key in filter) {
+          if (filter[key] !== "all") {
+            filteredGames = filteredGames.filter(game => game[key] === filter[key]);
+          }
+        }
+      }
+
       return dispatch({
         type: "GET_GAMES",
-        payload: json.data,
+        payload: filteredGames,
       });
     } catch (e) {
       console.log(e);
@@ -120,12 +145,14 @@ export function updateGame(payload) {
 
 
 export function postGame(payload) {
-  return async function () {
+  return async function (dispatch, getState) {
     try {
       const response = await axios.post("/videogames/add", payload);
+      // Después de agregar el juego, obtenemos todos los juegos nuevamente
+      await dispatch(getGames(getState().filter)); 
       return response;
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 }
